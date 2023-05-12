@@ -48,18 +48,12 @@ class TCell:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
-        if ftype == TType.STRING:
-          self.value = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
-        if ftype == TType.I64:
-          self.timestamp = iprot.readI64();
-        else:
-          iprot.skip(ftype)
-      else:
+      if fid == 1 and ftype == TType.STRING:
+        self.value = iprot.readString();
+      elif fid == 1 or fid == 2 and ftype != TType.I64 or fid != 2:
         iprot.skip(ftype)
+      else:
+        self.timestamp = iprot.readI64();
       iprot.readFieldEnd()
     iprot.readStructEnd()
 
@@ -86,7 +80,7 @@ class TCell:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -246,7 +240,7 @@ class ColumnDescriptor:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -380,7 +374,7 @@ class TRegionInfo:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -478,7 +472,7 @@ class Mutation:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -514,24 +508,18 @@ class BatchMutation:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
-        if ftype == TType.STRING:
-          self.row = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
-        if ftype == TType.LIST:
-          self.mutations = []
-          (_etype3, _size0) = iprot.readListBegin()
-          for _i4 in xrange(_size0):
-            _elem5 = Mutation()
-            _elem5.read(iprot)
-            self.mutations.append(_elem5)
-          iprot.readListEnd()
-        else:
-          iprot.skip(ftype)
-      else:
+      if fid == 1 and ftype == TType.STRING:
+        self.row = iprot.readString();
+      elif fid == 1 or fid == 2 and ftype != TType.LIST or fid != 2:
         iprot.skip(ftype)
+      else:
+        self.mutations = []
+        (_etype3, _size0) = iprot.readListBegin()
+        for _i4 in xrange(_size0):
+          _elem5 = Mutation()
+          _elem5.read(iprot)
+          self.mutations.append(_elem5)
+        iprot.readListEnd()
       iprot.readFieldEnd()
     iprot.readStructEnd()
 
@@ -561,7 +549,7 @@ class BatchMutation:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -660,7 +648,7 @@ class TIncrement:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -696,25 +684,19 @@ class TRowResult:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
-        if ftype == TType.STRING:
-          self.row = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
-        if ftype == TType.MAP:
-          self.columns = {}
-          (_ktype8, _vtype9, _size7 ) = iprot.readMapBegin() 
-          for _i11 in xrange(_size7):
-            _key12 = iprot.readString();
-            _val13 = TCell()
-            _val13.read(iprot)
-            self.columns[_key12] = _val13
-          iprot.readMapEnd()
-        else:
-          iprot.skip(ftype)
-      else:
+      if fid == 1 and ftype == TType.STRING:
+        self.row = iprot.readString();
+      elif fid == 1 or fid == 2 and ftype != TType.MAP or fid != 2:
         iprot.skip(ftype)
+      else:
+        self.columns = {}
+        (_ktype8, _vtype9, _size7 ) = iprot.readMapBegin() 
+        for _i11 in xrange(_size7):
+          _key12 = iprot.readString();
+          _val13 = TCell()
+          _val13.read(iprot)
+          self.columns[_key12] = _val13
+        iprot.readMapEnd()
       iprot.readFieldEnd()
     iprot.readStructEnd()
 
@@ -745,7 +727,7 @@ class TRowResult:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -875,7 +857,7 @@ class TScan:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -910,11 +892,8 @@ class IOError(TException):
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
-        if ftype == TType.STRING:
-          self.message = iprot.readString();
-        else:
-          iprot.skip(ftype)
+      if fid == 1 and ftype == TType.STRING:
+        self.message = iprot.readString();
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -942,7 +921,7 @@ class IOError(TException):
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -976,11 +955,8 @@ class IllegalArgument(TException):
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
-        if ftype == TType.STRING:
-          self.message = iprot.readString();
-        else:
-          iprot.skip(ftype)
+      if fid == 1 and ftype == TType.STRING:
+        self.message = iprot.readString();
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -1008,7 +984,7 @@ class IllegalArgument(TException):
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -1042,11 +1018,8 @@ class AlreadyExists(TException):
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
-        if ftype == TType.STRING:
-          self.message = iprot.readString();
-        else:
-          iprot.skip(ftype)
+      if fid == 1 and ftype == TType.STRING:
+        self.message = iprot.readString();
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -1074,7 +1047,7 @@ class AlreadyExists(TException):
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__

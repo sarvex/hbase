@@ -2364,57 +2364,59 @@ class Client(Iface):
 class Processor(Iface, TProcessor):
   def __init__(self, handler):
     self._handler = handler
-    self._processMap = {}
-    self._processMap["enableTable"] = Processor.process_enableTable
-    self._processMap["disableTable"] = Processor.process_disableTable
-    self._processMap["isTableEnabled"] = Processor.process_isTableEnabled
-    self._processMap["compact"] = Processor.process_compact
-    self._processMap["majorCompact"] = Processor.process_majorCompact
-    self._processMap["getTableNames"] = Processor.process_getTableNames
-    self._processMap["getColumnDescriptors"] = Processor.process_getColumnDescriptors
-    self._processMap["getTableRegions"] = Processor.process_getTableRegions
-    self._processMap["createTable"] = Processor.process_createTable
-    self._processMap["deleteTable"] = Processor.process_deleteTable
-    self._processMap["get"] = Processor.process_get
-    self._processMap["getVer"] = Processor.process_getVer
-    self._processMap["getVerTs"] = Processor.process_getVerTs
-    self._processMap["getRow"] = Processor.process_getRow
-    self._processMap["getRowWithColumns"] = Processor.process_getRowWithColumns
-    self._processMap["getRowTs"] = Processor.process_getRowTs
-    self._processMap["getRowWithColumnsTs"] = Processor.process_getRowWithColumnsTs
-    self._processMap["getRows"] = Processor.process_getRows
-    self._processMap["getRowsWithColumns"] = Processor.process_getRowsWithColumns
-    self._processMap["getRowsTs"] = Processor.process_getRowsTs
-    self._processMap["getRowsWithColumnsTs"] = Processor.process_getRowsWithColumnsTs
-    self._processMap["mutateRow"] = Processor.process_mutateRow
-    self._processMap["mutateRowTs"] = Processor.process_mutateRowTs
-    self._processMap["mutateRows"] = Processor.process_mutateRows
-    self._processMap["mutateRowsTs"] = Processor.process_mutateRowsTs
-    self._processMap["atomicIncrement"] = Processor.process_atomicIncrement
-    self._processMap["deleteAll"] = Processor.process_deleteAll
-    self._processMap["deleteAllTs"] = Processor.process_deleteAllTs
-    self._processMap["deleteAllRow"] = Processor.process_deleteAllRow
-    self._processMap["increment"] = Processor.process_increment
-    self._processMap["incrementRows"] = Processor.process_incrementRows
-    self._processMap["deleteAllRowTs"] = Processor.process_deleteAllRowTs
-    self._processMap["scannerOpenWithScan"] = Processor.process_scannerOpenWithScan
-    self._processMap["scannerOpen"] = Processor.process_scannerOpen
-    self._processMap["scannerOpenWithStop"] = Processor.process_scannerOpenWithStop
-    self._processMap["scannerOpenWithPrefix"] = Processor.process_scannerOpenWithPrefix
-    self._processMap["scannerOpenTs"] = Processor.process_scannerOpenTs
-    self._processMap["scannerOpenWithStopTs"] = Processor.process_scannerOpenWithStopTs
-    self._processMap["scannerGet"] = Processor.process_scannerGet
-    self._processMap["scannerGetList"] = Processor.process_scannerGetList
-    self._processMap["scannerClose"] = Processor.process_scannerClose
-    self._processMap["getRowOrBefore"] = Processor.process_getRowOrBefore
-    self._processMap["getRegionInfo"] = Processor.process_getRegionInfo
+    self._processMap = {
+        "enableTable": Processor.process_enableTable,
+        "disableTable": Processor.process_disableTable,
+        "isTableEnabled": Processor.process_isTableEnabled,
+        "compact": Processor.process_compact,
+        "majorCompact": Processor.process_majorCompact,
+        "getTableNames": Processor.process_getTableNames,
+        "getColumnDescriptors": Processor.process_getColumnDescriptors,
+        "getTableRegions": Processor.process_getTableRegions,
+        "createTable": Processor.process_createTable,
+        "deleteTable": Processor.process_deleteTable,
+        "get": Processor.process_get,
+        "getVer": Processor.process_getVer,
+        "getVerTs": Processor.process_getVerTs,
+        "getRow": Processor.process_getRow,
+        "getRowWithColumns": Processor.process_getRowWithColumns,
+        "getRowTs": Processor.process_getRowTs,
+        "getRowWithColumnsTs": Processor.process_getRowWithColumnsTs,
+        "getRows": Processor.process_getRows,
+        "getRowsWithColumns": Processor.process_getRowsWithColumns,
+        "getRowsTs": Processor.process_getRowsTs,
+        "getRowsWithColumnsTs": Processor.process_getRowsWithColumnsTs,
+        "mutateRow": Processor.process_mutateRow,
+        "mutateRowTs": Processor.process_mutateRowTs,
+        "mutateRows": Processor.process_mutateRows,
+        "mutateRowsTs": Processor.process_mutateRowsTs,
+        "atomicIncrement": Processor.process_atomicIncrement,
+        "deleteAll": Processor.process_deleteAll,
+        "deleteAllTs": Processor.process_deleteAllTs,
+        "deleteAllRow": Processor.process_deleteAllRow,
+        "increment": Processor.process_increment,
+        "incrementRows": Processor.process_incrementRows,
+        "deleteAllRowTs": Processor.process_deleteAllRowTs,
+        "scannerOpenWithScan": Processor.process_scannerOpenWithScan,
+        "scannerOpen": Processor.process_scannerOpen,
+        "scannerOpenWithStop": Processor.process_scannerOpenWithStop,
+        "scannerOpenWithPrefix": Processor.process_scannerOpenWithPrefix,
+        "scannerOpenTs": Processor.process_scannerOpenTs,
+        "scannerOpenWithStopTs": Processor.process_scannerOpenWithStopTs,
+        "scannerGet": Processor.process_scannerGet,
+        "scannerGetList": Processor.process_scannerGetList,
+        "scannerClose": Processor.process_scannerClose,
+        "getRowOrBefore": Processor.process_getRowOrBefore,
+        "getRegionInfo": Processor.process_getRegionInfo,
+    }
 
   def process(self, iprot, oprot):
     (name, type, seqid) = iprot.readMessageBegin()
     if name not in self._processMap:
       iprot.skip(TType.STRUCT)
       iprot.readMessageEnd()
-      x = TApplicationException(TApplicationException.UNKNOWN_METHOD, 'Unknown function %s' % (name))
+      x = TApplicationException(TApplicationException.UNKNOWN_METHOD,
+                                f'Unknown function {name}')
       oprot.writeMessageBegin(name, TMessageType.EXCEPTION, seqid)
       x.write(oprot)
       oprot.writeMessageEnd()
@@ -3072,11 +3074,8 @@ class enableTable_args:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
-        if ftype == TType.STRING:
-          self.tableName = iprot.readString();
-        else:
-          iprot.skip(ftype)
+      if fid == 1 and ftype == TType.STRING:
+        self.tableName = iprot.readString();
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -3101,7 +3100,7 @@ class enableTable_args:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -3132,12 +3131,9 @@ class enableTable_result:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
-        if ftype == TType.STRUCT:
-          self.io = IOError()
-          self.io.read(iprot)
-        else:
-          iprot.skip(ftype)
+      if fid == 1 and ftype == TType.STRUCT:
+        self.io = IOError()
+        self.io.read(iprot)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -3162,7 +3158,7 @@ class enableTable_result:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -3193,11 +3189,8 @@ class disableTable_args:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
-        if ftype == TType.STRING:
-          self.tableName = iprot.readString();
-        else:
-          iprot.skip(ftype)
+      if fid == 1 and ftype == TType.STRING:
+        self.tableName = iprot.readString();
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -3222,7 +3215,7 @@ class disableTable_args:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -3253,12 +3246,9 @@ class disableTable_result:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
-        if ftype == TType.STRUCT:
-          self.io = IOError()
-          self.io.read(iprot)
-        else:
-          iprot.skip(ftype)
+      if fid == 1 and ftype == TType.STRUCT:
+        self.io = IOError()
+        self.io.read(iprot)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -3283,7 +3273,7 @@ class disableTable_result:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -3314,11 +3304,8 @@ class isTableEnabled_args:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
-        if ftype == TType.STRING:
-          self.tableName = iprot.readString();
-        else:
-          iprot.skip(ftype)
+      if fid == 1 and ftype == TType.STRING:
+        self.tableName = iprot.readString();
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -3343,7 +3330,7 @@ class isTableEnabled_args:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -3376,19 +3363,13 @@ class isTableEnabled_result:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 0:
-        if ftype == TType.BOOL:
-          self.success = iprot.readBool();
-        else:
-          iprot.skip(ftype)
-      elif fid == 1:
-        if ftype == TType.STRUCT:
-          self.io = IOError()
-          self.io.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
+      if fid == 0 and ftype == TType.BOOL:
+        self.success = iprot.readBool();
+      elif fid == 0 or fid == 1 and ftype != TType.STRUCT or fid != 1:
         iprot.skip(ftype)
+      else:
+        self.io = IOError()
+        self.io.read(iprot)
       iprot.readFieldEnd()
     iprot.readStructEnd()
 
@@ -3415,7 +3396,7 @@ class isTableEnabled_result:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -3446,11 +3427,8 @@ class compact_args:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
-        if ftype == TType.STRING:
-          self.tableNameOrRegionName = iprot.readString();
-        else:
-          iprot.skip(ftype)
+      if fid == 1 and ftype == TType.STRING:
+        self.tableNameOrRegionName = iprot.readString();
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -3475,7 +3453,7 @@ class compact_args:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -3506,12 +3484,9 @@ class compact_result:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
-        if ftype == TType.STRUCT:
-          self.io = IOError()
-          self.io.read(iprot)
-        else:
-          iprot.skip(ftype)
+      if fid == 1 and ftype == TType.STRUCT:
+        self.io = IOError()
+        self.io.read(iprot)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -3536,7 +3511,7 @@ class compact_result:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -3567,11 +3542,8 @@ class majorCompact_args:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
-        if ftype == TType.STRING:
-          self.tableNameOrRegionName = iprot.readString();
-        else:
-          iprot.skip(ftype)
+      if fid == 1 and ftype == TType.STRING:
+        self.tableNameOrRegionName = iprot.readString();
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -3596,7 +3568,7 @@ class majorCompact_args:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -3627,12 +3599,9 @@ class majorCompact_result:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
-        if ftype == TType.STRUCT:
-          self.io = IOError()
-          self.io.read(iprot)
-        else:
-          iprot.skip(ftype)
+      if fid == 1 and ftype == TType.STRUCT:
+        self.io = IOError()
+        self.io.read(iprot)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -3657,7 +3626,7 @@ class majorCompact_result:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -3699,7 +3668,7 @@ class getTableNames_args:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -3732,24 +3701,18 @@ class getTableNames_result:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 0:
-        if ftype == TType.LIST:
-          self.success = []
-          (_etype26, _size23) = iprot.readListBegin()
-          for _i27 in xrange(_size23):
-            _elem28 = iprot.readString();
-            self.success.append(_elem28)
-          iprot.readListEnd()
-        else:
-          iprot.skip(ftype)
-      elif fid == 1:
-        if ftype == TType.STRUCT:
-          self.io = IOError()
-          self.io.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
+      if fid == 0 and ftype == TType.LIST:
+        self.success = []
+        (_etype26, _size23) = iprot.readListBegin()
+        for _i27 in xrange(_size23):
+          _elem28 = iprot.readString();
+          self.success.append(_elem28)
+        iprot.readListEnd()
+      elif fid == 0 or fid == 1 and ftype != TType.STRUCT or fid != 1:
         iprot.skip(ftype)
+      else:
+        self.io = IOError()
+        self.io.read(iprot)
       iprot.readFieldEnd()
     iprot.readStructEnd()
 
@@ -3779,7 +3742,7 @@ class getTableNames_result:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -3810,11 +3773,8 @@ class getColumnDescriptors_args:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
-        if ftype == TType.STRING:
-          self.tableName = iprot.readString();
-        else:
-          iprot.skip(ftype)
+      if fid == 1 and ftype == TType.STRING:
+        self.tableName = iprot.readString();
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -3839,7 +3799,7 @@ class getColumnDescriptors_args:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -3872,26 +3832,20 @@ class getColumnDescriptors_result:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 0:
-        if ftype == TType.MAP:
-          self.success = {}
-          (_ktype31, _vtype32, _size30 ) = iprot.readMapBegin() 
-          for _i34 in xrange(_size30):
-            _key35 = iprot.readString();
-            _val36 = ColumnDescriptor()
-            _val36.read(iprot)
-            self.success[_key35] = _val36
-          iprot.readMapEnd()
-        else:
-          iprot.skip(ftype)
-      elif fid == 1:
-        if ftype == TType.STRUCT:
-          self.io = IOError()
-          self.io.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
+      if fid == 0 and ftype == TType.MAP:
+        self.success = {}
+        (_ktype31, _vtype32, _size30 ) = iprot.readMapBegin() 
+        for _i34 in xrange(_size30):
+          _key35 = iprot.readString();
+          _val36 = ColumnDescriptor()
+          _val36.read(iprot)
+          self.success[_key35] = _val36
+        iprot.readMapEnd()
+      elif fid == 0 or fid == 1 and ftype != TType.STRUCT or fid != 1:
         iprot.skip(ftype)
+      else:
+        self.io = IOError()
+        self.io.read(iprot)
       iprot.readFieldEnd()
     iprot.readStructEnd()
 
@@ -3922,7 +3876,7 @@ class getColumnDescriptors_result:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -3953,11 +3907,8 @@ class getTableRegions_args:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
-        if ftype == TType.STRING:
-          self.tableName = iprot.readString();
-        else:
-          iprot.skip(ftype)
+      if fid == 1 and ftype == TType.STRING:
+        self.tableName = iprot.readString();
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -3982,7 +3933,7 @@ class getTableRegions_args:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -4015,25 +3966,19 @@ class getTableRegions_result:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 0:
-        if ftype == TType.LIST:
-          self.success = []
-          (_etype42, _size39) = iprot.readListBegin()
-          for _i43 in xrange(_size39):
-            _elem44 = TRegionInfo()
-            _elem44.read(iprot)
-            self.success.append(_elem44)
-          iprot.readListEnd()
-        else:
-          iprot.skip(ftype)
-      elif fid == 1:
-        if ftype == TType.STRUCT:
-          self.io = IOError()
-          self.io.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
+      if fid == 0 and ftype == TType.LIST:
+        self.success = []
+        (_etype42, _size39) = iprot.readListBegin()
+        for _i43 in xrange(_size39):
+          _elem44 = TRegionInfo()
+          _elem44.read(iprot)
+          self.success.append(_elem44)
+        iprot.readListEnd()
+      elif fid == 0 or fid == 1 and ftype != TType.STRUCT or fid != 1:
         iprot.skip(ftype)
+      else:
+        self.io = IOError()
+        self.io.read(iprot)
       iprot.readFieldEnd()
     iprot.readStructEnd()
 
@@ -4063,7 +4008,7 @@ class getTableRegions_result:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -4097,24 +4042,18 @@ class createTable_args:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
-        if ftype == TType.STRING:
-          self.tableName = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
-        if ftype == TType.LIST:
-          self.columnFamilies = []
-          (_etype49, _size46) = iprot.readListBegin()
-          for _i50 in xrange(_size46):
-            _elem51 = ColumnDescriptor()
-            _elem51.read(iprot)
-            self.columnFamilies.append(_elem51)
-          iprot.readListEnd()
-        else:
-          iprot.skip(ftype)
-      else:
+      if fid == 1 and ftype == TType.STRING:
+        self.tableName = iprot.readString();
+      elif fid == 1 or fid == 2 and ftype != TType.LIST or fid != 2:
         iprot.skip(ftype)
+      else:
+        self.columnFamilies = []
+        (_etype49, _size46) = iprot.readListBegin()
+        for _i50 in xrange(_size46):
+          _elem51 = ColumnDescriptor()
+          _elem51.read(iprot)
+          self.columnFamilies.append(_elem51)
+        iprot.readListEnd()
       iprot.readFieldEnd()
     iprot.readStructEnd()
 
@@ -4144,7 +4083,7 @@ class createTable_args:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -4231,7 +4170,7 @@ class createTable_result:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -4262,11 +4201,8 @@ class deleteTable_args:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
-        if ftype == TType.STRING:
-          self.tableName = iprot.readString();
-        else:
-          iprot.skip(ftype)
+      if fid == 1 and ftype == TType.STRING:
+        self.tableName = iprot.readString();
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -4291,7 +4227,7 @@ class deleteTable_args:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -4322,12 +4258,9 @@ class deleteTable_result:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 1:
-        if ftype == TType.STRUCT:
-          self.io = IOError()
-          self.io.read(iprot)
-        else:
-          iprot.skip(ftype)
+      if fid == 1 and ftype == TType.STRUCT:
+        self.io = IOError()
+        self.io.read(iprot)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -4352,7 +4285,7 @@ class deleteTable_result:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -4458,7 +4391,7 @@ class get_args:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -4491,25 +4424,19 @@ class get_result:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 0:
-        if ftype == TType.LIST:
-          self.success = []
-          (_etype65, _size62) = iprot.readListBegin()
-          for _i66 in xrange(_size62):
-            _elem67 = TCell()
-            _elem67.read(iprot)
-            self.success.append(_elem67)
-          iprot.readListEnd()
-        else:
-          iprot.skip(ftype)
-      elif fid == 1:
-        if ftype == TType.STRUCT:
-          self.io = IOError()
-          self.io.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
+      if fid == 0 and ftype == TType.LIST:
+        self.success = []
+        (_etype65, _size62) = iprot.readListBegin()
+        for _i66 in xrange(_size62):
+          _elem67 = TCell()
+          _elem67.read(iprot)
+          self.success.append(_elem67)
+        iprot.readListEnd()
+      elif fid == 0 or fid == 1 and ftype != TType.STRUCT or fid != 1:
         iprot.skip(ftype)
+      else:
+        self.io = IOError()
+        self.io.read(iprot)
       iprot.readFieldEnd()
     iprot.readStructEnd()
 
@@ -4539,7 +4466,7 @@ class get_result:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -4657,7 +4584,7 @@ class getVer_args:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -4690,25 +4617,19 @@ class getVer_result:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 0:
-        if ftype == TType.LIST:
-          self.success = []
-          (_etype81, _size78) = iprot.readListBegin()
-          for _i82 in xrange(_size78):
-            _elem83 = TCell()
-            _elem83.read(iprot)
-            self.success.append(_elem83)
-          iprot.readListEnd()
-        else:
-          iprot.skip(ftype)
-      elif fid == 1:
-        if ftype == TType.STRUCT:
-          self.io = IOError()
-          self.io.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
+      if fid == 0 and ftype == TType.LIST:
+        self.success = []
+        (_etype81, _size78) = iprot.readListBegin()
+        for _i82 in xrange(_size78):
+          _elem83 = TCell()
+          _elem83.read(iprot)
+          self.success.append(_elem83)
+        iprot.readListEnd()
+      elif fid == 0 or fid == 1 and ftype != TType.STRUCT or fid != 1:
         iprot.skip(ftype)
+      else:
+        self.io = IOError()
+        self.io.read(iprot)
       iprot.readFieldEnd()
     iprot.readStructEnd()
 
@@ -4738,7 +4659,7 @@ class getVer_result:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -4868,7 +4789,7 @@ class getVerTs_args:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -4901,25 +4822,19 @@ class getVerTs_result:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 0:
-        if ftype == TType.LIST:
-          self.success = []
-          (_etype97, _size94) = iprot.readListBegin()
-          for _i98 in xrange(_size94):
-            _elem99 = TCell()
-            _elem99.read(iprot)
-            self.success.append(_elem99)
-          iprot.readListEnd()
-        else:
-          iprot.skip(ftype)
-      elif fid == 1:
-        if ftype == TType.STRUCT:
-          self.io = IOError()
-          self.io.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
+      if fid == 0 and ftype == TType.LIST:
+        self.success = []
+        (_etype97, _size94) = iprot.readListBegin()
+        for _i98 in xrange(_size94):
+          _elem99 = TCell()
+          _elem99.read(iprot)
+          self.success.append(_elem99)
+        iprot.readListEnd()
+      elif fid == 0 or fid == 1 and ftype != TType.STRUCT or fid != 1:
         iprot.skip(ftype)
+      else:
+        self.io = IOError()
+        self.io.read(iprot)
       iprot.readFieldEnd()
     iprot.readStructEnd()
 
@@ -4949,7 +4864,7 @@ class getVerTs_result:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -5043,7 +4958,7 @@ class getRow_args:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -5076,25 +4991,19 @@ class getRow_result:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 0:
-        if ftype == TType.LIST:
-          self.success = []
-          (_etype113, _size110) = iprot.readListBegin()
-          for _i114 in xrange(_size110):
-            _elem115 = TRowResult()
-            _elem115.read(iprot)
-            self.success.append(_elem115)
-          iprot.readListEnd()
-        else:
-          iprot.skip(ftype)
-      elif fid == 1:
-        if ftype == TType.STRUCT:
-          self.io = IOError()
-          self.io.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
+      if fid == 0 and ftype == TType.LIST:
+        self.success = []
+        (_etype113, _size110) = iprot.readListBegin()
+        for _i114 in xrange(_size110):
+          _elem115 = TRowResult()
+          _elem115.read(iprot)
+          self.success.append(_elem115)
+        iprot.readListEnd()
+      elif fid == 0 or fid == 1 and ftype != TType.STRUCT or fid != 1:
         iprot.skip(ftype)
+      else:
+        self.io = IOError()
+        self.io.read(iprot)
       iprot.readFieldEnd()
     iprot.readStructEnd()
 
@@ -5124,7 +5033,7 @@ class getRow_result:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -5238,7 +5147,7 @@ class getRowWithColumns_args:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -5271,25 +5180,19 @@ class getRowWithColumns_result:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 0:
-        if ftype == TType.LIST:
-          self.success = []
-          (_etype136, _size133) = iprot.readListBegin()
-          for _i137 in xrange(_size133):
-            _elem138 = TRowResult()
-            _elem138.read(iprot)
-            self.success.append(_elem138)
-          iprot.readListEnd()
-        else:
-          iprot.skip(ftype)
-      elif fid == 1:
-        if ftype == TType.STRUCT:
-          self.io = IOError()
-          self.io.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
+      if fid == 0 and ftype == TType.LIST:
+        self.success = []
+        (_etype136, _size133) = iprot.readListBegin()
+        for _i137 in xrange(_size133):
+          _elem138 = TRowResult()
+          _elem138.read(iprot)
+          self.success.append(_elem138)
+        iprot.readListEnd()
+      elif fid == 0 or fid == 1 and ftype != TType.STRUCT or fid != 1:
         iprot.skip(ftype)
+      else:
+        self.io = IOError()
+        self.io.read(iprot)
       iprot.readFieldEnd()
     iprot.readStructEnd()
 
@@ -5319,7 +5222,7 @@ class getRowWithColumns_result:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -5425,7 +5328,7 @@ class getRowTs_args:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -5458,25 +5361,19 @@ class getRowTs_result:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 0:
-        if ftype == TType.LIST:
-          self.success = []
-          (_etype152, _size149) = iprot.readListBegin()
-          for _i153 in xrange(_size149):
-            _elem154 = TRowResult()
-            _elem154.read(iprot)
-            self.success.append(_elem154)
-          iprot.readListEnd()
-        else:
-          iprot.skip(ftype)
-      elif fid == 1:
-        if ftype == TType.STRUCT:
-          self.io = IOError()
-          self.io.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
+      if fid == 0 and ftype == TType.LIST:
+        self.success = []
+        (_etype152, _size149) = iprot.readListBegin()
+        for _i153 in xrange(_size149):
+          _elem154 = TRowResult()
+          _elem154.read(iprot)
+          self.success.append(_elem154)
+        iprot.readListEnd()
+      elif fid == 0 or fid == 1 and ftype != TType.STRUCT or fid != 1:
         iprot.skip(ftype)
+      else:
+        self.io = IOError()
+        self.io.read(iprot)
       iprot.readFieldEnd()
     iprot.readStructEnd()
 
@@ -5506,7 +5403,7 @@ class getRowTs_result:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -5632,7 +5529,7 @@ class getRowWithColumnsTs_args:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -5665,25 +5562,19 @@ class getRowWithColumnsTs_result:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 0:
-        if ftype == TType.LIST:
-          self.success = []
-          (_etype175, _size172) = iprot.readListBegin()
-          for _i176 in xrange(_size172):
-            _elem177 = TRowResult()
-            _elem177.read(iprot)
-            self.success.append(_elem177)
-          iprot.readListEnd()
-        else:
-          iprot.skip(ftype)
-      elif fid == 1:
-        if ftype == TType.STRUCT:
-          self.io = IOError()
-          self.io.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
+      if fid == 0 and ftype == TType.LIST:
+        self.success = []
+        (_etype175, _size172) = iprot.readListBegin()
+        for _i176 in xrange(_size172):
+          _elem177 = TRowResult()
+          _elem177.read(iprot)
+          self.success.append(_elem177)
+        iprot.readListEnd()
+      elif fid == 0 or fid == 1 and ftype != TType.STRUCT or fid != 1:
         iprot.skip(ftype)
+      else:
+        self.io = IOError()
+        self.io.read(iprot)
       iprot.readFieldEnd()
     iprot.readStructEnd()
 
@@ -5713,7 +5604,7 @@ class getRowWithColumnsTs_result:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -5815,7 +5706,7 @@ class getRows_args:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -5848,25 +5739,19 @@ class getRows_result:
       (fname, ftype, fid) = iprot.readFieldBegin()
       if ftype == TType.STOP:
         break
-      if fid == 0:
-        if ftype == TType.LIST:
-          self.success = []
-          (_etype198, _size195) = iprot.readListBegin()
-          for _i199 in xrange(_size195):
-            _elem200 = TRowResult()
-            _elem200.read(iprot)
-            self.success.append(_elem200)
-          iprot.readListEnd()
-        else:
-          iprot.skip(ftype)
-      elif fid == 1:
-        if ftype == TType.STRUCT:
-          self.io = IOError()
-          self.io.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
+      if fid == 0 and ftype == TType.LIST:
+        self.success = []
+        (_etype198, _size195) = iprot.readListBegin()
+        for _i199 in xrange(_size195):
+          _elem200 = TRowResult()
+          _elem200.read(iprot)
+          self.success.append(_elem200)
+        iprot.readListEnd()
+      elif fid == 0 or fid == 1 and ftype != TType.STRUCT or fid != 1:
         iprot.skip(ftype)
+      else:
+        self.io = IOError()
+        self.io.read(iprot)
       iprot.readFieldEnd()
     iprot.readStructEnd()
 
@@ -5896,7 +5781,7 @@ class getRows_result:
   def __repr__(self):
     L = ['%s=%r' % (key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return f"{self.__class__.__name__}({', '.join(L)})"
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__

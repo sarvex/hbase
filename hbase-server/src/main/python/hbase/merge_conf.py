@@ -57,7 +57,7 @@ class MergeConfTool:
             self.fatal('No input files specified')
         for f_path in input_files:
             if not os.path.isfile(f_path):
-                self.fatal('Input file %s does not exist' % f_path)
+                self.fatal(f'Input file {f_path} does not exist')
         self.input_files = input_files
         self.output_file = opts.output_file
 
@@ -87,13 +87,12 @@ class MergeConfTool:
         self.merged_conf = dom_impl.createDocument(None, 'configuration', None)
         for k in sorted(values.keys()):
             new_property = self.merged_conf.createElement('property')
-            c = self.merged_conf.createComment('from ' + source_files[k])
+            c = self.merged_conf.createComment(f'from {source_files[k]}')
             new_property.appendChild(c)
             self.append_text_child(new_property, 'name', k)
             self.append_text_child(new_property, 'value', values[k])
 
-            description = descriptions.get(k, None)
-            if description:
+            if description := descriptions.get(k, None):
                 description = ' '.join(description.strip().split())
                 textwrap_kwargs = {}
                 if sys.version_info >= (2, 6):
@@ -136,8 +135,9 @@ class MergeConfTool:
 
     def whole_text(self, element):
         if len(element.childNodes) > 1:
-            self.fatal('No more than one child expected in %s: %s' % (
-                self.current_file, element.toxml()))
+            self.fatal(
+                f'No more than one child expected in {self.current_file}: {element.toxml()}'
+            )
         if len(element.childNodes) == 1:
             return element.childNodes[0].wholeText.strip()
         return ''
